@@ -15,6 +15,12 @@ async function testRedisConnection(){
         await client.connect();
         console.log("Connected to redis");
 
+        await client.set("key", "solomon");
+
+        const extractValue = await client.get("key");
+
+        console.log(extractValue)
+
     } catch(error) {
         console.error(error);
 
