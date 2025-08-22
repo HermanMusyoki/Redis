@@ -27,6 +27,36 @@ async function testAdditionalFeatures() {
 
         await subscriber.unsubscribe('Solo-channel')
         await subscriber.quit()
+
+
+        //pipelining & transactions
+        const multi = client.multi();
+        
+        multi.set("key-transaction1", "value");
+        multi.set("key-transaction2", "value2")
+        multi.get("key-transaction1")
+        multi.get("key-transaction2")
+
+        const results = await multi.exec();
+        
+        const pipeline = client.multi()
+
+        multi.set("key-pipeline1", "value");
+        multi.set("key-pipeline2", "value2")
+        multi.get("key-pipeline1")
+        multi.get("key-pipeline2")
+
+        const pipelineresults = await multi.exec();
+
+        //batch data operation
+        const pipelineOne = client.multi();
+
+        for (let i=0; i<1000; i++){
+            pipeline.set(`user:${i}:action`, `Action ${i}`)
+        }
+
+        await pipelineOne.exec()
+
         
 
     } catch(error) {
